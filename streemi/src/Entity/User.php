@@ -27,6 +27,9 @@ class User
     #[ORM\Column(enumType: UserAccountStatusEnum::class)]
     private ?UserAccountStatusEnum $accountstatus = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Subscriptions $currentSubscription = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class User
     public function setAccountstatus(UserAccountStatusEnum $accountstatus): static
     {
         $this->accountstatus = $accountstatus;
+
+        return $this;
+    }
+
+    public function getCurrentSubscription(): ?Subscriptions
+    {
+        return $this->currentSubscription;
+    }
+
+    public function setCurrentSubscription(?Subscriptions $currentSubscription): static
+    {
+        $this->currentSubscription = $currentSubscription;
 
         return $this;
     }
