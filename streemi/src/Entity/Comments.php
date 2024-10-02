@@ -21,6 +21,12 @@ class Comments
     #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: CommentsStatus::class)]
     private array $status = [];
 
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    private ?User $owner = null;
+
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    private ?Media $media = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -49,6 +55,30 @@ class Comments
     public function setStatus(array $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getMedia(): ?Media
+    {
+        return $this->media;
+    }
+
+    public function setMedia(?Media $media): static
+    {
+        $this->media = $media;
 
         return $this;
     }
