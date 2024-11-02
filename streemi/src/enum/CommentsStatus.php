@@ -1,12 +1,10 @@
 <?php
+declare(strict_types=1);
 
-declare(strict_types=1); 
+namespace App\Enum;
 
-namespace App\enum;
-
-enum CommentsStatus: string
-{
-    case Pending = 'pending';      // En attente de validation
-    case Publish = 'publish';    // Approuvé et visible
-    case Rejected = 'rejected';    // Rejeté, non visible
+enum CommentStatusEnum : string {
+    case PUBLISH = "publish";
+    case PENDING = "pending";
+    case REJECTED = "rejected";
 }

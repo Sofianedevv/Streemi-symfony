@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\PlaylistMedia;
+use App\Entity\Episode;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PlaylistMedia>
+ * @extends ServiceEntityRepository<Episode>
  */
-class PlaylistMediaRepository extends ServiceEntityRepository
+class EpisodeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PlaylistMedia::class);
+        parent::__construct($registry, Episode::class);
     }
 
     //    /**
-    //     * @return PlaylistMedia[] Returns an array of PlaylistMedia objects
+    //     * @return Episode[] Returns an array of Episode objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
+    //        return $this->createQueryBuilder('e')
+    //            ->andWhere('e.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
+    //            ->orderBy('e.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?PlaylistMedia
+    //    public function findOneBySomeField($value): ?Episode
     //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
+    //        return $this->createQueryBuilder('e')
+    //            ->andWhere('e.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

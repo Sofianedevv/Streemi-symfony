@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\LanguagesRepository;
+use App\Repository\LanguageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: LanguagesRepository::class)]
-class Languages
+#[ORM\Entity(repositoryClass: LanguageRepository::class)]
+class Language
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,21 +18,18 @@ class Languages
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 3)]
     private ?string $code = null;
 
     /**
      * @var Collection<int, Media>
      */
-    #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'languages')]
+    #[ORM\ManyToMany(targetEntity: Media::class, mappedBy: 'languages')]
     private Collection $media;
-
-  
 
     public function __construct()
     {
         $this->media = new ArrayCollection();
-        $this->language = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,6 +73,7 @@ class Languages
     {
         if (!$this->media->contains($medium)) {
             $this->media->add($medium);
+            $medium->addLanguage($this);
         }
 
         return $this;
@@ -83,11 +81,10 @@ class Languages
 
     public function removeMedium(Media $medium): static
     {
-        $this->media->removeElement($medium);
+        if ($this->media->removeElement($medium)) {
+            $medium->removeLanguage($this);
+        }
 
         return $this;
     }
-
-    
-    
 }

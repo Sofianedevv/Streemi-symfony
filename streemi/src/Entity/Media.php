@@ -2,14 +2,20 @@
 
 namespace App\Entity;
 
+use App\Enum\MediaTypeEnum;
 use App\Repository\MediaRepository;
-use App\enum\MediaType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
 
+#[ORM\InheritanceType('JOINED')]
+#[DiscriminatorColumn(name: 'discr', type: 'string')]
+#[DiscriminatorMap(['serie' => Serie::class, 'movies' => Movie::class ])]
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
+
 class Media
 {
     #[ORM\Id]
@@ -17,42 +23,23 @@ class Media
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: MediaType::class)]
-    private array $mediaType = [];
-
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $shortDescription = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $short_description = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $longDescription = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $long_description = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $releaseDate = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $release_date = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $coverImage = null;
+    private ?string $cover_image = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?array $staff = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?array $casting = null;
-
-    /**
-     * @var Collection<int, Comments>
-     */
-    #[ORM\OneToMany(targetEntity: Comments::class, mappedBy: 'media')]
-    private Collection $comments;
-
-   
-    /**
-     * @var Collection<int, WatchHistory>
-     */
-    #[ORM\OneToMany(targetEntity: WatchHistory::class, mappedBy: 'media')]
-    private Collection $watchHistories;
+    #[ORM\Column]
+    private array $staff = [];
 
     /**
      * @var Collection<int, PlaylistMedia>
@@ -61,44 +48,44 @@ class Media
     private Collection $playlistMedia;
 
     /**
-     * @var Collection<int, Categories>
+     * @var Collection<int, Category>
      */
-    #[ORM\ManyToMany(targetEntity: Categories::class, mappedBy: 'category')]
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'mmedia')]
     private Collection $categories;
 
     /**
-     * @var Collection<int, Languages>
+     * @var Collection<int, Language>
      */
-    #[ORM\ManyToMany(targetEntity: Languages::class, mappedBy: 'media')]
+    #[ORM\ManyToMany(targetEntity: Language::class, inversedBy: 'media')]
     private Collection $languages;
+
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'media')]
+    private Collection $comments;
+
+    /**
+     * @var Collection<int, WatchHistory>
+     */
+    #[ORM\OneToMany(targetEntity: WatchHistory::class, mappedBy: 'media')]
+    private Collection $watchHistories;
+
+    #[ORM\Column]
+    private array $casting = [];
 
     public function __construct()
     {
-        $this->comments = new ArrayCollection();
         $this->playlistMedia = new ArrayCollection();
-        $this->watchHistories = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->languages = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->watchHistories = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return MediaType[]
-     */
-    public function getMediaType(): array
-    {
-        return $this->mediaType;
-    }
-
-    public function setMediaType(array $mediaType): static
-    {
-        $this->mediaType = $mediaType;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -115,138 +102,60 @@ class Media
 
     public function getShortDescription(): ?string
     {
-        return $this->shortDescription;
+        return $this->short_description;
     }
 
-    public function setShortDescription(?string $shortDescription): static
+    public function setShortDescription(string $short_description): static
     {
-        $this->shortDescription = $shortDescription;
+        $this->short_description = $short_description;
 
         return $this;
     }
 
     public function getLongDescription(): ?string
     {
-        return $this->longDescription;
+        return $this->long_description;
     }
 
-    public function setLongDescription(?string $longDescription): static
+    public function setLongDescription(string $long_description): static
     {
-        $this->longDescription = $longDescription;
+        $this->long_description = $long_description;
 
         return $this;
     }
 
     public function getReleaseDate(): ?\DateTimeInterface
     {
-        return $this->releaseDate;
+        return $this->release_date;
     }
 
-    public function setReleaseDate(?\DateTimeInterface $releaseDate): static
+    public function setReleaseDate(\DateTimeInterface $release_date): static
     {
-        $this->releaseDate = $releaseDate;
+        $this->release_date = $release_date;
 
         return $this;
     }
 
     public function getCoverImage(): ?string
     {
-        return $this->coverImage;
+        return $this->cover_image;
     }
 
-    public function setCoverImage(string $coverImage): static
+    public function setCoverImage(string $cover_image): static
     {
-        $this->coverImage = $coverImage;
+        $this->cover_image = $cover_image;
 
         return $this;
     }
 
-    public function getStaff(): ?array
+    public function getStaff(): array
     {
         return $this->staff;
     }
 
-    public function setStaff(?array $staff): static
+    public function setStaff(array $staff): static
     {
         $this->staff = $staff;
-
-        return $this;
-    }
-
-    public function getCasting(): ?array
-    {
-        return $this->casting;
-    }
-
-    public function setCasting(?array $casting): static
-    {
-        $this->casting = $casting;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Comments>
-     */
-    public function getComments(): Collection
-    {
-        return $this->comments;
-    }
-
-    public function addComment(Comments $comment): static
-    {
-        if (!$this->comments->contains($comment)) {
-            $this->comments->add($comment);
-            $comment->setMedia($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComment(Comments $comment): static
-    {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getMedia() === $this) {
-                $comment->setMedia(null);
-            }
-        }
-
-        return $this;
-    }
-
-   
-
-   
-
-   
-
-    /**
-     * @return Collection<int, WatchHistory>
-     */
-    public function getWatchHistories(): Collection
-    {
-        return $this->watchHistories;
-    }
-
-    public function addWatchHistory(WatchHistory $watchHistory): static
-    {
-        if (!$this->watchHistories->contains($watchHistory)) {
-            $this->watchHistories->add($watchHistory);
-            $watchHistory->setMedia($this);
-        }
-
-        return $this;
-    }
-
-    public function removeWatchHistory(WatchHistory $watchHistory): static
-    {
-        if ($this->watchHistories->removeElement($watchHistory)) {
-            // set the owning side to null (unless already changed)
-            if ($watchHistory->getMedia() === $this) {
-                $watchHistory->setMedia(null);
-            }
-        }
 
         return $this;
     }
@@ -282,55 +191,124 @@ class Media
     }
 
     /**
-     * @return Collection<int, Categories>
+     * @return Collection<int, Category>
      */
     public function getCategories(): Collection
     {
         return $this->categories;
     }
 
-    public function addCategory(Categories $category): static
+    public function addCategory(Category $category): static
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
-            $category->addCategory($this);
+            $category->addMedia($this);
         }
 
         return $this;
     }
 
-    public function removeCategory(Categories $category): static
+    public function removeCategory(Category $category): static
     {
         if ($this->categories->removeElement($category)) {
-            $category->removeCategory($this);
+            $category->removeMedia($this);
         }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Languages>
+     * @return Collection<int, Language>
      */
     public function getLanguages(): Collection
     {
         return $this->languages;
     }
 
-    public function addLanguage(Languages $language): static
+    public function addLanguage(Language $language): static
     {
         if (!$this->languages->contains($language)) {
             $this->languages->add($language);
-            $language->addMedium($this);
         }
 
         return $this;
     }
 
-    public function removeLanguage(Languages $language): static
+    public function removeLanguage(Language $language): static
     {
-        if ($this->languages->removeElement($language)) {
-            $language->removeMedium($this);
+        $this->languages->removeElement($language);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setMedia($this);
         }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getMedia() === $this) {
+                $comment->setMedia(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WatchHistory>
+     */
+    public function getWatchHistories(): Collection
+    {
+        return $this->watchHistories;
+    }
+
+    public function addWatchHistory(WatchHistory $watchHistory): static
+    {
+        if (!$this->watchHistories->contains($watchHistory)) {
+            $this->watchHistories->add($watchHistory);
+            $watchHistory->setMedia($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWatchHistory(WatchHistory $watchHistory): static
+    {
+        if ($this->watchHistories->removeElement($watchHistory)) {
+            // set the owning side to null (unless already changed)
+            if ($watchHistory->getMedia() === $this) {
+                $watchHistory->setMedia(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCasting(): array
+    {
+        return $this->casting;
+    }
+
+    public function setCasting(array $casting): static
+    {
+        $this->casting = $casting;
 
         return $this;
     }

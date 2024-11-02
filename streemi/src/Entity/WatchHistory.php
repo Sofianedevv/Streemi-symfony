@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\WatchHistoryRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WatchHistoryRepository::class)]
@@ -14,16 +13,18 @@ class WatchHistory
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $lastWatched = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $lastWatchedAt = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?int $numberOfViews = null;
 
     #[ORM\ManyToOne(inversedBy: 'watchHistories')]
-    private ?User $owner = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $watcher = null;
 
     #[ORM\ManyToOne(inversedBy: 'watchHistories')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Media $media = null;
 
     public function getId(): ?int
@@ -31,14 +32,14 @@ class WatchHistory
         return $this->id;
     }
 
-    public function getLastWatched(): ?\DateTimeInterface
+    public function getLastWatchedAt(): ?\DateTimeImmutable
     {
-        return $this->lastWatched;
+        return $this->lastWatchedAt;
     }
 
-    public function setLastWatched(?\DateTimeInterface $lastWatched): static
+    public function setLastWatchedAt(\DateTimeImmutable $lastWatchedAt): static
     {
-        $this->lastWatched = $lastWatched;
+        $this->lastWatchedAt = $lastWatchedAt;
 
         return $this;
     }
@@ -48,21 +49,21 @@ class WatchHistory
         return $this->numberOfViews;
     }
 
-    public function setNumberOfViews(?int $numberOfViews): static
+    public function setNumberOfViews(int $numberOfViews): static
     {
         $this->numberOfViews = $numberOfViews;
 
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getWatcher(): ?User
     {
-        return $this->owner;
+        return $this->watcher;
     }
 
-    public function setOwner(?User $owner): static
+    public function setWatcher(?User $watcher): static
     {
-        $this->owner = $owner;
+        $this->watcher = $watcher;
 
         return $this;
     }

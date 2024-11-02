@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\PlaylistMedia;
+use App\Entity\PlaylistSubscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PlaylistMedia>
+ * @extends ServiceEntityRepository<PlaylistSubscription>
  */
-class PlaylistMediaRepository extends ServiceEntityRepository
+class PlaylistSubscriptionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PlaylistMedia::class);
+        parent::__construct($registry, PlaylistSubscription::class);
     }
 
     //    /**
-    //     * @return PlaylistMedia[] Returns an array of PlaylistMedia objects
+    //     * @return PlaylistSubscription[] Returns an array of PlaylistSubscription objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class PlaylistMediaRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?PlaylistMedia
+    //    public function findOneBySomeField($value): ?PlaylistSubscription
     //    {
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')

@@ -2,29 +2,30 @@
 
 namespace App\Entity;
 
-use App\Repository\SeasonsRepository;
+use App\Repository\SeasonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SeasonsRepository::class)]
-class Seasons
+#[ORM\Entity(repositoryClass: SeasonRepository::class)]
+class Season
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $seasonsNumber = null;
+    #[ORM\Column(length: 255)]
+    private ?string $number = null;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]
-    private ?Serie $serie = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Serie $series = null;
 
     /**
-     * @var Collection<int, Episodes>
+     * @var Collection<int, Episode>
      */
-    #[ORM\OneToMany(targetEntity: Episodes::class, mappedBy: 'season')]
+    #[ORM\OneToMany(targetEntity: Episode::class, mappedBy: 'season')]
     private Collection $episodes;
 
     public function __construct()
@@ -37,39 +38,39 @@ class Seasons
         return $this->id;
     }
 
-    public function getSeasonsNumber(): ?int
+    public function getNumber(): ?string
     {
-        return $this->seasonsNumber;
+        return $this->number;
     }
 
-    public function setSeasonsNumber(?int $seasonsNumber): static
+    public function setNumber(string $number): static
     {
-        $this->seasonsNumber = $seasonsNumber;
+        $this->number = $number;
 
         return $this;
     }
 
-    public function getSerie(): ?Serie
+    public function getSeries(): ?Serie
     {
-        return $this->serie;
+        return $this->series;
     }
 
-    public function setSerie(?Serie $serie): static
+    public function setSeries(?Serie $series): static
     {
-        $this->serie = $serie;
+        $this->series = $series;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Episodes>
+     * @return Collection<int, Episode>
      */
     public function getEpisodes(): Collection
     {
         return $this->episodes;
     }
 
-    public function addEpisode(Episodes $episode): static
+    public function addEpisode(Episode $episode): static
     {
         if (!$this->episodes->contains($episode)) {
             $this->episodes->add($episode);
@@ -79,7 +80,7 @@ class Seasons
         return $this;
     }
 
-    public function removeEpisode(Episodes $episode): static
+    public function removeEpisode(Episode $episode): static
     {
         if ($this->episodes->removeElement($episode)) {
             // set the owning side to null (unless already changed)
