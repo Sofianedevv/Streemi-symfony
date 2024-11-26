@@ -34,12 +34,12 @@ class Subscription
      * @var Collection<int, SubscriptionHistory>
      */
     #[ORM\OneToMany(targetEntity: SubscriptionHistory::class, mappedBy: 'subscription')]
-    private Collection $subscriptionsHistories;
+    private Collection $subscriptionHistories;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->subscriptionsHistories = new ArrayCollection();
+        $this->subscriptionHistories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -116,27 +116,27 @@ class Subscription
     /**
      * @return Collection<int, SubscriptionHistory>
      */
-    public function getSubscriptionsHistories(): Collection
+    public function getSubscriptionHistories(): Collection
     {
-        return $this->subscriptionsHistories;
+        return $this->subscriptionHistories;
     }
 
-    public function addSubscriptionsHistory(SubscriptionHistory $subscriptionsHistory): static
+    public function addSubscriptionHistory(SubscriptionHistory $subscriptionHistory): static
     {
-        if (!$this->subscriptionsHistories->contains($subscriptionsHistory)) {
-            $this->subscriptionsHistories->add($subscriptionsHistory);
-            $subscriptionsHistory->setSubscription($this);
+        if (!$this->subscriptionHistories->contains($subscriptionHistory)) {
+            $this->subscriptionHistories->add($subscriptionHistory);
+            $subscriptionHistory->setSubscription($this);
         }
 
         return $this;
     }
 
-    public function removeSubscriptionsHistory(SubscriptionHistory $subscriptionsHistory): static
+    public function removeSubscriptionHistory(SubscriptionHistory $subscriptionHistory): static
     {
-        if ($this->subscriptionsHistories->removeElement($subscriptionsHistory)) {
+        if ($this->subscriptionHistories->removeElement($subscriptionHistory)) {
             // set the owning side to null (unless already changed)
-            if ($subscriptionsHistory->getSubscription() === $this) {
-                $subscriptionsHistory->setSubscription(null);
+            if ($subscriptionHistory->getSubscription() === $this) {
+                $subscriptionHistory->setSubscription(null);
             }
         }
 

@@ -1,4 +1,5 @@
 App\Entity\Category:
+
   category_action:
     nom: 'action'
     label: 'Action'

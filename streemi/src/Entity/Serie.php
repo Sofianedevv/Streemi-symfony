@@ -1,29 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\SerieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
 
-#[ORM\Entity(repositoryClass: SerieRepository::class)]
+#[Entity(repositoryClass: SerieRepository::class)]
 class Serie extends Media
 {
-
     /**
      * @var Collection<int, Season>
      */
-    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'series')]
+    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'serie')]
     private Collection $seasons;
 
     public function __construct()
     {
+        parent::__construct();
         $this->seasons = new ArrayCollection();
-        parent::__construct(); 
-
     }
-
 
     /**
      * @return Collection<int, Season>
@@ -37,7 +37,7 @@ class Serie extends Media
     {
         if (!$this->seasons->contains($season)) {
             $this->seasons->add($season);
-            $season->setSeries($this);
+            $season->setSerie($this);
         }
 
         return $this;
@@ -47,12 +47,11 @@ class Serie extends Media
     {
         if ($this->seasons->removeElement($season)) {
             // set the owning side to null (unless already changed)
-            if ($season->getSeries() === $this) {
-                $season->setSeries(null);
+            if ($season->getSerie() === $this) {
+                $season->setSerie(null);
             }
         }
 
         return $this;
     }
-
 }

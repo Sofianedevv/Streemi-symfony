@@ -25,25 +25,25 @@ class Playlist
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * @var Collection<int, PlaylistMedia>
-     */
-    #[ORM\OneToMany(targetEntity: PlaylistMedia::class, mappedBy: 'playlist')]
-    private Collection $playlistMedia;
-
-    #[ORM\ManyToOne(inversedBy: 'playlists')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $author = null;
-
-    /**
      * @var Collection<int, PlaylistSubscription>
      */
     #[ORM\OneToMany(targetEntity: PlaylistSubscription::class, mappedBy: 'playlist')]
     private Collection $playlistSubscriptions;
 
+    #[ORM\ManyToOne(inversedBy: 'playlists')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $creator = null;
+
+    /**
+     * @var Collection<int, PlaylistMedia>
+     */
+    #[ORM\OneToMany(targetEntity: PlaylistMedia::class, mappedBy: 'playlist')]
+    private Collection $playlistMedia;
+
     public function __construct()
     {
-        $this->playlistMedia = new ArrayCollection();
         $this->playlistSubscriptions = new ArrayCollection();
+        $this->playlistMedia = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,48 +88,6 @@ class Playlist
     }
 
     /**
-     * @return Collection<int, PlaylistMedia>
-     */
-    public function getPlaylistMedia(): Collection
-    {
-        return $this->playlistMedia;
-    }
-
-    public function addPlaylistMedium(PlaylistMedia $playlistMedium): static
-    {
-        if (!$this->playlistMedia->contains($playlistMedium)) {
-            $this->playlistMedia->add($playlistMedium);
-            $playlistMedium->setPlaylist($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlaylistMedium(PlaylistMedia $playlistMedium): static
-    {
-        if ($this->playlistMedia->removeElement($playlistMedium)) {
-            // set the owning side to null (unless already changed)
-            if ($playlistMedium->getPlaylist() === $this) {
-                $playlistMedium->setPlaylist(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getCurator(): ?User
-    {
-        return $this->author;
-    }
-
-    public function setCurator(?User $curator): static
-    {
-        $this->author = $curator;
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, PlaylistSubscription>
      */
     public function getPlaylistSubscriptions(): Collection
@@ -153,6 +111,48 @@ class Playlist
             // set the owning side to null (unless already changed)
             if ($playlistSubscription->getPlaylist() === $this) {
                 $playlistSubscription->setPlaylist(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): static
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlaylistMedia>
+     */
+    public function getPlaylistMedia(): Collection
+    {
+        return $this->playlistMedia;
+    }
+
+    public function addPlaylistMedium(PlaylistMedia $playlistMedium): static
+    {
+        if (!$this->playlistMedia->contains($playlistMedium)) {
+            $this->playlistMedia->add($playlistMedium);
+            $playlistMedium->setPlaylist($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlaylistMedium(PlaylistMedia $playlistMedium): static
+    {
+        if ($this->playlistMedia->removeElement($playlistMedium)) {
+            // set the owning side to null (unless already changed)
+            if ($playlistMedium->getPlaylist() === $this) {
+                $playlistMedium->setPlaylist(null);
             }
         }
 
