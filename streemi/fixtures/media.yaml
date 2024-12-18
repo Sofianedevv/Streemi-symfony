@@ -1,42 +1,41 @@
 App\Entity\Media:
-  media (template):
-    title: 'Media <current()>'
-    shortDescription: 'short description'
-    longDescription: '<realText()>'
-    releaseDate: '<datetime()>'
-    coverImage: 'https://picsum.photos/400/550?random=<numberBetween(1, 100)>'
+  media_template (template):
+    short_description: "short description <current()>"
+    long_description: "long description <current()>"
+    release_date: "<dateTimeBetween('-10 years', 'now')>"
+    cover_image: "https://picsum.photos/400/550?random=<numberBetween(1, 100)>"
+    categories:
+      - "@category_action"
+      - "@category_adventure"
+    languages:
+      - "@lang_en"
+      - "@lang_fr"
+    staff: []
+    casting: []
 
 App\Entity\Movie:
-  media_movie_{1..50} (extends media):
-    title: 'Movie <current()>'
+  movies_{1..10} (extends media_template):
+    title: "Film <current()> - <name()>"
 
 App\Entity\Serie:
-  media_serie_{1..50} (extends media):
-    title: 'Serie <current()>'
-
+  series_{1..10} (extends media_template):
+    title: "Serie <current()> - <name()>"
 
 App\Entity\Season:
-  season_1_{@media_serie*}:
-    number: '<numberBetween(1, 10)>'
-    serie: '<current()>'
-  season_2_{@media_serie*}:
-    number: '<numberBetween(1, 10)>'
-    serie: '<current()>'
-  season_3_{@media_serie*}:
-    number: '<numberBetween(1, 10)>'
-    serie: '<current()>'
+  seasons_{1..10}:
+    number: "<numberBetween(1, 10)>"
+    series: "@series_*"
 
 App\Entity\Episode:
-  episode_{1..500}:
-    title: '<sentence()>'
-    duration: '<numberBetween(45, 90)>'
-    releasedAt: "<dateTimeBetween('-1 week', '+1 week')>"
-    season: '@season_*'
-
+  episodes_{1..10}:
+    title: "Episode <current()> - <name()>"
+    duration: "<numberBetween(30, 120)>"
+    releasedAt: "<dateTimeBetween('-1 years', 'now')>"
+    season: "@seasons_*>"
 
 App\Entity\WatchHistory:
-    watch_history_{1..500}:
-      lastWatchedAt: "<dateTimeBetween('-1 week', '+1 week')>"
-      numberOfViews: '<numberBetween(1, 100)>'
-      watcher: '@user_*'
-      media: '@media_*'
+  watch_history_{1..500}:
+    lastWatchedAt: "<dateTimeBetween('-1 week', '+1 week')>"
+    numberOfViews: "<numberBetween(1, 100)>"
+    watcher: "@user_*"
+    media: "@media_*"

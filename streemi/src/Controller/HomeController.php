@@ -1,26 +1,20 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller;
 
-use Psr\Log\LoggerInterface;
+use App\Repository\MediaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    public function __construct(
-    )
+    #[Route('/', name: 'app_home')]
+    public function index( MediaRepository $mediaRepository): Response
     {
-    }
-
-    #[Route(path: '/', name: 'page_homepage')]
-    public function home(): Response
-    {
-        return $this->render(view: 'index.html.twig');
+        $medias = $mediaRepository->findTendances(5);
+        return $this->render('index.html.twig', [
+            'medias' => $medias
+        ]);
     }
 }

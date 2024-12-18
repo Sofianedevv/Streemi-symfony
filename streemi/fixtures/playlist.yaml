@@ -1,18 +1,23 @@
 App\Entity\Playlist:
-  playlist_{1..50}:
-    name: 'Playlist <word()>'
+  playlist_{1..10}:
+    name: "playlist <current()>"
     createdAt: '<dateTimeBetween("-1 year", "now")>'
     updatedAt: '<dateTimeBetween("now", "+1 year")>'
-    creator: '@user_*'
+    author: "@user_*"
 
 App\Entity\PlaylistMedia:
-    playmedia_{1..500}:
-      addedAt: '<dateTimeBetween("-1 year", "now")>'
-      playlist: '@playlist_*'
-      media: '@media_*'
+  playlistMedia_movie_{1..10}:
+    addedAt: '<dateTimeBetween("-1 year", "now")>'
+    media: "@movies_*"
+    playlist: "@playlist_*"
 
+  playlistMedia_serie_{1..10}:
+    addedAt: '<dateTimeBetween("-1 year", "now")>'
+    media: "@series_*"
+    playlist: "@playlist_*"
+    
 App\Entity\PlaylistSubscription:
-  playsub_{1..500}:
-    playlist: '@playlist_*'
-    subscriber: '@user_*'
+  playlistSubscription_{1..10}:
+    playlist: "@playlist_*"
+    subscriber: "@user_*"
     subscribedAt: '<dateTimeBetween("-1 year", "now")>'

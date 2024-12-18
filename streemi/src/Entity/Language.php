@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 #[ORM\Entity(repositoryClass: LanguageRepository::class)]
 class Language
 {
@@ -16,7 +19,9 @@ class Language
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255, minMessage: 'Le nom de la catégorie doit contenir au moins {{ limit }} caractères.', maxMessage: 'Le nom de la catégorie ne peut pas contenir plus de {{limit}} caractères.')]
+    private ?string $name = null;
 
     #[ORM\Column(length: 3)]
     private ?string $code = null;
@@ -25,11 +30,11 @@ class Language
      * @var Collection<int, Media>
      */
     #[ORM\ManyToMany(targetEntity: Media::class, mappedBy: 'languages')]
-    private Collection $medias;
+    private Collection $media;
 
     public function __construct()
     {
-        $this->medias = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -37,14 +42,14 @@ class Language
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setName(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -64,25 +69,25 @@ class Language
     /**
      * @return Collection<int, Media>
      */
-    public function getMedias(): Collection
+    public function getMedia(): Collection
     {
-        return $this->medias;
+        return $this->media;
     }
 
-    public function addMedia(Media $media): static
+    public function addMedium(Media $medium): static
     {
-        if (!$this->medias->contains($media)) {
-            $this->medias->add($media);
-            $media->addLanguage($this);
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->addLanguage($this);
         }
 
         return $this;
     }
 
-    public function removeMedia(Media $media): static
+    public function removeMedium(Media $medium): static
     {
-        if ($this->medias->removeElement($media)) {
-            $media->removeLanguage($this);
+        if ($this->media->removeElement($medium)) {
+            $medium->removeLanguage($this);
         }
 
         return $this;

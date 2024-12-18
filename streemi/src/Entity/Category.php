@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
@@ -16,7 +18,9 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255, minMessage: 'Le nom de la catégorie doit contenir au moins {{ limit }} caractères.', maxMessage: 'Le nom de la catégorie ne peut pas contenir plus de {{limit}} caractères.')]
+    private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     private ?string $label = null;
@@ -24,27 +28,28 @@ class Category
     /**
      * @var Collection<int, Media>
      */
-    #[ORM\ManyToMany(targetEntity: Media::class, mappedBy: 'categories')]
-    private Collection $medias;
+    #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'categories')]
+    private Collection $media;
 
     public function __construct()
     {
-        $this->medias = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setName(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -64,16 +69,15 @@ class Category
     /**
      * @return Collection<int, Media>
      */
-    public function getMedias(): Collection
+    public function getMedia(): Collection
     {
-        return $this->medias;
+        return $this->media;
     }
 
     public function addMedia(Media $media): static
     {
-        if (!$this->medias->contains($media)) {
-            $this->medias->add($media);
-            $media->addCategory($this);
+        if (!$this->media->contains($media)) {
+            $this->media->add($media);
         }
 
         return $this;
@@ -81,10 +85,9 @@ class Category
 
     public function removeMedia(Media $media): static
     {
-        if ($this->medias->removeElement($media)) {
-            $media->removeCategory($this);
-        }
+        $this->media->removeElement($media);
 
         return $this;
     }
+
 }
